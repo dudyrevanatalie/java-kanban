@@ -1,3 +1,5 @@
+package ru.yandex.practicum.tasktracker.tasks;
+
 public class Subtask extends Task {
     private final int epicId;
 
@@ -10,10 +12,9 @@ public class Subtask extends Task {
         return epicId;
     }
 
-
     @Override
     public String toString() {
-        return "Subtask{" +
+        return "ru.yandex.practicum.tasktracker.tasks.Subtask{" +
                 "name='" + getName() + '\'' +
                 ", id=" + getId() +
                 ", description='" + getDescription() + '\'' +

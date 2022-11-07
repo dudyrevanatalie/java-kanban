@@ -1,3 +1,5 @@
+package ru.yandex.practicum.tasktracker.tasks;
+
 public class Task {
     private String name;
     private int id;
@@ -45,7 +47,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
+        return "ru.yandex.practicum.tasktracker.tasks.Task{" +
                 "name='" + name + '\'' +
                 ", id=" + id +
                 ", description='" + description + '\'' +

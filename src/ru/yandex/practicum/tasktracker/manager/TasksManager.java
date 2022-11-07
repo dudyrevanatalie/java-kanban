@@ -1,13 +1,20 @@
+package ru.yandex.practicum.tasktracker.manager;
+
+import ru.yandex.practicum.tasktracker.tasks.Epic;
+import ru.yandex.practicum.tasktracker.tasks.Subtask;
+import ru.yandex.practicum.tasktracker.tasks.Task;
+import ru.yandex.practicum.tasktracker.tasks.TaskStatus;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TasksManager {
-    private HashMap<Integer, Subtask> subtasks;
-    private HashMap<Integer, Task> tasks;
-    private HashMap<Integer, Epic> epics;
+    private final HashMap<Integer, Subtask> subtasks;
+    private final HashMap<Integer, Task> tasks;
+    private final HashMap<Integer, Epic> epics;
     private static int generatorId;
 
-    TasksManager() {
+    public TasksManager() {
         subtasks = new HashMap<>();
         tasks = new HashMap<>();
         epics = new HashMap<>();
@@ -136,10 +143,27 @@ public class TasksManager {
     }
 
     public void deleteSubtaskFromId(int id) {
+        Subtask subtask = subtasks.get(id);
+        int epicId = subtask.getEpicId();
+        Epic epic = epics.get(epicId);
         subtasks.remove(id);
+        //удаляем саб таску из эпик листа
+        ArrayList<Integer> subtaskIds = epic.getSubtaskIds();
+        for (int i = 0; i < subtaskIds.size(); i++) {
+            if (subtaskIds.get(i) == id) {
+                subtaskIds.remove(i);
+            }
+        }
+        updateStatusOfEpic(epic);
     }
 
     public void deleteEpicFromId(int id) {
+        Epic epicUse = epics.get(id);
+        ArrayList<Integer> subtaskIdsList = epicUse.getSubtaskIds();
+
+        for (Integer idSub : subtaskIdsList) {
+            subtasks.remove(idSub);
+        }
         epics.remove(id);
     }
 
