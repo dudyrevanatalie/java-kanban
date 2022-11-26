@@ -26,15 +26,24 @@ public class Main {
         tasksManager.createSubtask(subtask1);
 
         Subtask subtask2 = new Subtask("Купить сливки для пасты", "", epic1.getId());
-        tasksManager.createSubtask(subtask2);
 
+        tasksManager.createSubtask(subtask2);
+        tasksManager.createSubtask(subtask2);
+        tasksManager.createSubtask(subtask2);
+        tasksManager.createSubtask(subtask2);
+        Subtask s = tasksManager.getFromIdSubtask(subtask2.getId());
+        tasksManager.createSubtask(s);
+        Subtask s2 = tasksManager.getFromIdSubtask(subtask2.getId());
+        tasksManager.createSubtask(s2);
+        Subtask s3 = tasksManager.getFromIdSubtask(subtask2.getId());
+        tasksManager.createSubtask(s3);
 
         //Распечатайте списки эпиков, задач и подзадач
         System.out.println(tasksManager.getTasks());
         System.out.println(tasksManager.getEpics());
         System.out.println(tasksManager.getSubtasks());
 
-
+        /*
         System.out.println("Просматриваем наш task - " + tasksManager.getFromIdTask(task1.getId()));
         System.out.println("История просмотров, список - " + tasksManager.getHistory());
 
@@ -70,5 +79,6 @@ public class Main {
         System.out.println("История просмотров, список - " + tasksManager.getHistory());
         System.out.println("Размер списка истории = " + tasksManager.getHistory().size());
 
+        */
     }
 }

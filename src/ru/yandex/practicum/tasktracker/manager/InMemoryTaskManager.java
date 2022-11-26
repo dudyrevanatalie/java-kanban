@@ -86,27 +86,73 @@ public class InMemoryTaskManager implements TasksManager {
     //Создание. Сам объект должен передаваться в качестве параметра.
     @Override
     public void createTask(Task task) {
-        generatorId++;
-        task.setId(generatorId);
-        tasks.put(generatorId, task);
+        int id = task.getId();
+        boolean flag = false;
+
+        for (int key : tasks.keySet()) {
+            if (id == key) {
+                flag = true;
+                break;
+            }
+        }
+
+        if (!(flag)) {
+            generatorId++;
+            task.setId(generatorId);
+            tasks.put(generatorId, task);
+        } else {
+            System.out.println("Subtask с таким id уже существует :)");
+        }
+
+
     }
 
     @Override
     public void createSubtask(Subtask subtask) {
-        generatorId++;
-        subtask.setId(generatorId);
-        subtasks.put(generatorId, subtask);
-        Epic epic = epics.get(subtask.getEpicId());
-        epic.getSubtaskIds().add(subtask.getId());
-        //проверка статуса эпика в котором лежит наш сабтаск
-        updateStatusOfEpic(epic);
+
+        int id = subtask.getId();
+        boolean flag = false;
+
+        for (int key : subtasks.keySet()) {
+            if (id == key) {
+                flag = true;
+                break;
+            }
+        }
+
+        if (!(flag)) {
+            generatorId++;
+            subtask.setId(generatorId);
+            subtasks.put(generatorId, subtask);
+            Epic epic = epics.get(subtask.getEpicId());
+            epic.getSubtaskIds().add(subtask.getId());
+            //проверка статуса эпика в котором лежит наш сабтаск
+            updateStatusOfEpic(epic);
+        } else {
+            System.out.println("Subtask с таким id уже существует :)");
+        }
     }
 
     @Override
     public void createEpic(Epic epic) {
-        generatorId++;
-        epic.setId(generatorId);
-        epics.put(generatorId, epic);
+
+        int id = epic.getId();
+        boolean flag = false;
+
+        for (int key : epics.keySet()) {
+            if (id == key) {
+                flag = true;
+                break;
+            }
+        }
+
+        if (!(flag)) {
+            generatorId++;
+            epic.setId(generatorId);
+            epics.put(generatorId, epic);
+        } else {
+            System.out.println("Subtask с таким id уже существует :)");
+        }
     }
 
     @Override
