@@ -87,21 +87,14 @@ public class InMemoryTaskManager implements TasksManager {
     @Override
     public void createTask(Task task) {
         int id = task.getId();
-        boolean flag = false;
+        Task t = tasks.get(id);
 
-        for (int key : tasks.keySet()) {
-            if (id == key) {
-                flag = true;
-                break;
-            }
-        }
-
-        if (!(flag)) {
+        if (t == null) {
             generatorId++;
             task.setId(generatorId);
             tasks.put(generatorId, task);
         } else {
-            System.out.println("Subtask с таким id уже существует :)");
+            System.out.println("Task с таким id уже существует :)");
         }
 
 
@@ -111,16 +104,9 @@ public class InMemoryTaskManager implements TasksManager {
     public void createSubtask(Subtask subtask) {
 
         int id = subtask.getId();
-        boolean flag = false;
+        Subtask s = subtasks.get(id);
 
-        for (int key : subtasks.keySet()) {
-            if (id == key) {
-                flag = true;
-                break;
-            }
-        }
-
-        if (!(flag)) {
+        if (s == null) {
             generatorId++;
             subtask.setId(generatorId);
             subtasks.put(generatorId, subtask);
@@ -137,21 +123,13 @@ public class InMemoryTaskManager implements TasksManager {
     public void createEpic(Epic epic) {
 
         int id = epic.getId();
-        boolean flag = false;
-
-        for (int key : epics.keySet()) {
-            if (id == key) {
-                flag = true;
-                break;
-            }
-        }
-
-        if (!(flag)) {
+        Epic e = epics.get(id);
+        if (e == null) {
             generatorId++;
             epic.setId(generatorId);
             epics.put(generatorId, epic);
         } else {
-            System.out.println("Subtask с таким id уже существует :)");
+            System.out.println("Epic с таким id уже существует :)");
         }
     }
 
@@ -217,6 +195,7 @@ public class InMemoryTaskManager implements TasksManager {
         Task task = tasks.get(id);
         if (task != null) {
             tasks.remove(id);
+            historyManager.remove(id);
         } else {
             System.out.println("Такого id не существует!");
         }
@@ -229,6 +208,7 @@ public class InMemoryTaskManager implements TasksManager {
             int epicId = subtask.getEpicId();
             Epic epic = epics.get(epicId);
             subtasks.remove(id);
+            historyManager.remove(id);
             //удаляем саб таску из эпик листа
             ArrayList<Integer> subtaskIds = epic.getSubtaskIds();
 
@@ -251,8 +231,13 @@ public class InMemoryTaskManager implements TasksManager {
         Epic epicUse = epics.get(id);
         if (epicUse != null) {
             ArrayList<Integer> subtaskIdsList = epicUse.getSubtaskIds();
+            for (Integer sub : subtaskIdsList) {
+                subtasks.remove(sub);
+                historyManager.remove(sub);
+            }
             subtaskIdsList.clear();
             epics.remove(id);
+            historyManager.remove(id);
         } else {
             System.out.println("Такого id не существует!");
         }
