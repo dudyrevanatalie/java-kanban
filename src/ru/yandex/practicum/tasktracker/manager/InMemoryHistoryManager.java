@@ -11,7 +11,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         this.historyMap = new HashMap<>();
     }
 
-    //я так понимаю, тут можно было использовать LinkedHashMap? Но я решила попробывать сама создать подобие
     private static class Node {
         Node prev;
         Task data;
@@ -43,32 +42,34 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private void removeNode(Node node) {
         //меняем ссылки у соседей нода который удаляем и меняем tail, head
-        final Node preNode = node.prev;
-        final Node nextNode = node.next;
-        if (preNode == null) {
-            this.head = nextNode;
-        } else {
-            preNode.next = node.next;
-        }
+        if (node != null) {
+            final Node preNode = node.prev;
+            final Node nextNode = node.next;
+            if (preNode == null) {
+                this.head = nextNode;
+            } else {
+                preNode.next = nextNode;
+            }
 
-        if (nextNode == null) {
-            this.tail = preNode;
+            if (nextNode == null) {
+                this.tail = preNode;
+            } else {
+                nextNode.prev = preNode;
+            }
         } else {
-            nextNode.prev = node.prev;
+            System.out.println("Переданный в метод removeNode(Node node) node  = null");
         }
-
     }
 
     private List<Task> getTasks() {
         if (historyMap.size() == 0) {
-            return null;//перекладываем из мапы в arraylist
+            return null;
         } else {
             List<Task> historyList = new ArrayList<>();
             Node iterator = head;
-            historyList.add(iterator.data);
-            while (iterator != tail) {
-                iterator = iterator.next;
+            while (iterator != null) {
                 historyList.add(iterator.data);
+                iterator = iterator.next;
             }
             return historyList;
         }
@@ -77,10 +78,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-        Node node = historyMap.get(id);
+        Node node = historyMap.remove(id);
         if (node != null) {
             removeNode(node);
-            historyMap.remove(id);
         }
     }
 
@@ -88,8 +88,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void add(Task task) {
         if (historyMap.containsKey(task.getId())) {
             //удаляем ноду
-            removeNode(historyMap.get(task.getId()));
-            historyMap.remove(task.getId());
+            removeNode(historyMap.remove(task.getId()));
         }
         historyMap.put(task.getId(), addLast(task));
     }
