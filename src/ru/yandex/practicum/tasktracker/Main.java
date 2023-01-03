@@ -6,14 +6,17 @@ import ru.yandex.practicum.tasktracker.tasks.Epic;
 import ru.yandex.practicum.tasktracker.tasks.Subtask;
 import ru.yandex.practicum.tasktracker.tasks.Task;
 
+import java.io.File;
+
 public class Main {
 
     public static void main(String[] args) {
         //мини-тест
         TasksManager tasksManager = Managers.getDefault();
-
+        //Немного не понимаю как и зачем создавать метод main в новом менеджере.
+        //Выходит, что мы должны избавиться от класса Main? Если не трудно, объясните пожалуйста
         System.out.println("Создаем две задачи, эпик с тремя подзадачами и эпик без подзадач");
-        Task task1 = new Task("Выполнить задание 5 проекта", "Протестировать код");
+        Task task1 = new Task("Выполнить задание 6 проекта", "Протестировать код");
         tasksManager.createTask(task1);
 
         Task task2 = new Task("Встать в 6:30", "Приготовить завтрак");
@@ -55,10 +58,13 @@ public class Main {
         System.out.println("История просмотров, список - " + tasksManager.getHistory());
 
         System.out.println("Удаляем epic1");
-
         tasksManager.deleteEpicFromId(epic1.getId());
         System.out.println("История просмотров, список - " + tasksManager.getHistory());
 
+        System.out.println("-----------------------------------");
+        System.out.println("новый менеджер");
+        TasksManager tasksManager2 = Managers.getDefault(new File("src/resourses/", "file.csv"));
+        System.out.println(tasksManager2.getHistory());
 
 
     }

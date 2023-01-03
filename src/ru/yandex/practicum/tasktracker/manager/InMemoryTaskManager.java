@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.HashMap;
 
 public class InMemoryTaskManager implements TasksManager {
-    private final HashMap<Integer, Subtask> subtasks;
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, Epic> epics;
-    private static int generatorId;
+    protected final HashMap<Integer, Subtask> subtasks;
+    protected final HashMap<Integer, Task> tasks;
+    protected final HashMap<Integer, Epic> epics;
+    protected static int generatorId;
 
-    private final HistoryManager historyManager;
+    protected final HistoryManager historyManager;
 
     public InMemoryTaskManager() {
         subtasks = new HashMap<>();
@@ -64,23 +64,30 @@ public class InMemoryTaskManager implements TasksManager {
     //Получение по идентификатору.
     @Override
     public Subtask getFromIdSubtask(int id) {
-        Subtask subtask = subtasks.get(id);
-        historyManager.add(subtask);
-        return subtasks.get(id);
+        Subtask subtask = subtasks.getOrDefault(id, null);
+        if (subtask != null) {
+            historyManager.add(subtask);
+        }
+
+        return subtask;
     }
 
     @Override
     public Task getFromIdTask(int id) {
-        Task task = tasks.get(id);
-        historyManager.add(task);
-        return tasks.get(id);
+        Task task = tasks.getOrDefault(id, null);
+        if (task != null) {
+            historyManager.add(task);
+        }
+        return task;
     }
 
     @Override
     public Epic getFromIdEpic(int id) {
-        Epic epic = epics.get(id);
-        historyManager.add(epic);
-        return epics.get(id);
+        Epic epic = epics.getOrDefault(id, null);
+        if (epic != null) {
+            historyManager.add(epic);
+        }
+        return epic;
     }
 
     //Создание. Сам объект должен передаваться в качестве параметра.
@@ -90,9 +97,11 @@ public class InMemoryTaskManager implements TasksManager {
         Task t = tasks.get(id);
 
         if (t == null) {
-            generatorId++;
-            task.setId(generatorId);
-            tasks.put(generatorId, task);
+            if (task.getId() == 0) {
+                generatorId++;
+                task.setId(generatorId);
+            }
+            tasks.put(task.getId(), task);
         } else {
             System.out.println("Task с таким id уже существует :)");
         }
@@ -107,13 +116,18 @@ public class InMemoryTaskManager implements TasksManager {
         Subtask s = subtasks.get(id);
 
         if (s == null) {
-            generatorId++;
-            subtask.setId(generatorId);
-            subtasks.put(generatorId, subtask);
-            Epic epic = epics.get(subtask.getEpicId());
-            epic.getSubtaskIds().add(subtask.getId());
-            //проверка статуса эпика в котором лежит наш сабтаск
-            updateStatusOfEpic(epic);
+            if (subtask.getId() == 0) {
+                generatorId++;
+                subtask.setId(generatorId);
+            }
+            subtasks.put(subtask.getId(), subtask);
+            Epic epic = epics.getOrDefault(subtask.getEpicId(), null);
+            if (epic != null) {
+                epic.getSubtaskIds().add(subtask.getId());
+                //проверка статуса эпика в котором лежит наш сабтаск
+                updateStatusOfEpic(epic);
+            }
+
         } else {
             System.out.println("Subtask с таким id уже существует :)");
         }
@@ -125,9 +139,11 @@ public class InMemoryTaskManager implements TasksManager {
         int id = epic.getId();
         Epic e = epics.get(id);
         if (e == null) {
-            generatorId++;
-            epic.setId(generatorId);
-            epics.put(generatorId, epic);
+            if (epic.getId() == 0) {
+                generatorId++;
+                epic.setId(generatorId);
+            }
+            epics.put(epic.getId(), epic);
         } else {
             System.out.println("Epic с таким id уже существует :)");
         }

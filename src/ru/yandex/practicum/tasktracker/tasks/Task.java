@@ -1,11 +1,13 @@
 package ru.yandex.practicum.tasktracker.tasks;
 
-public class Task {
-    private String name;
-    private int id;
+import ru.yandex.practicum.tasktracker.manager.TypesOfTasks;
 
-    private String description;
-    private TaskStatus status;
+public class Task {
+    protected String name;
+    protected int id;
+
+    protected String description;
+    protected TaskStatus status;
 
     public Task(String name, String description) {
         this.name = name;
@@ -47,11 +49,6 @@ public class Task {
 
     @Override
     public String toString() {
-        return "ru.yandex.practicum.tasktracker.tasks.Task{" +
-                "name='" + name + '\'' +
-                ", id=" + id +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                '}';
+        return id + "," + TypesOfTasks.TASK.toString() + "," + name + "," + status + "," + description + ",";
     }
 }

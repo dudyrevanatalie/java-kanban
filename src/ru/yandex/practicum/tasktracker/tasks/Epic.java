@@ -1,5 +1,7 @@
 package ru.yandex.practicum.tasktracker.tasks;
 
+import ru.yandex.practicum.tasktracker.manager.TypesOfTasks;
+
 import java.util.ArrayList;
 
 public class Epic extends Task {
@@ -16,12 +18,6 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "ru.yandex.practicum.tasktracker.tasks.Epic{" +
-                "name='" + getName() + '\'' +
-                ", id=" + getId() +
-                ", description='" + getDescription() + '\'' +
-                ", status=" + getStatus() +
-                ", subtaskIds=" + subtaskIds + "" +
-                '}';
+        return id + "," + TypesOfTasks.EPIC.toString() + "," + name + "," + status + "," + description + ",";
     }
 }
