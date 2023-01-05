@@ -1,7 +1,5 @@
 package ru.yandex.practicum.tasktracker.tasks;
 
-import ru.yandex.practicum.tasktracker.manager.TypesOfTasks;
-
 import java.util.ArrayList;
 
 public class Epic extends Task {

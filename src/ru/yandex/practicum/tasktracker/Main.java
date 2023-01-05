@@ -1,7 +1,7 @@
 package ru.yandex.practicum.tasktracker;
 
-import ru.yandex.practicum.tasktracker.manager.Managers;
-import ru.yandex.practicum.tasktracker.manager.TasksManager;
+import ru.yandex.practicum.tasktracker.task_managers.Managers;
+import ru.yandex.practicum.tasktracker.task_managers.TasksManager;
 import ru.yandex.practicum.tasktracker.tasks.Epic;
 import ru.yandex.practicum.tasktracker.tasks.Subtask;
 import ru.yandex.practicum.tasktracker.tasks.Task;
@@ -13,8 +13,6 @@ public class Main {
     public static void main(String[] args) {
         //мини-тест
         TasksManager tasksManager = Managers.getDefault();
-        //Немного не понимаю как и зачем создавать метод main в новом менеджере.
-        //Выходит, что мы должны избавиться от класса Main? Если не трудно, объясните пожалуйста
         System.out.println("Создаем две задачи, эпик с тремя подзадачами и эпик без подзадач");
         Task task1 = new Task("Выполнить задание 6 проекта", "Протестировать код");
         tasksManager.createTask(task1);
@@ -59,13 +57,20 @@ public class Main {
 
         System.out.println("Удаляем epic1");
         tasksManager.deleteEpicFromId(epic1.getId());
-        System.out.println("История просмотров, список - " + tasksManager.getHistory());
+        //System.out.println("История просмотров, список - " + tasksManager.getHistory());
+
+        Subtask subtask4 = new Subtask("сабтаск4", "test1", epic1.getId());
+        tasksManager.createSubtask(subtask4);
+        Subtask subtask5 = new Subtask("сабтаск5", "test2", epic1.getId());
+        tasksManager.createSubtask(subtask5);
+
+        System.out.println("Просматриваем наш subtask4 - " + tasksManager.getFromIdSubtask(subtask4.getId()));
+        //System.out.println("История просмотров, список - " + tasksManager.getHistory());
+        //у меня вроде как дополнительные сабтаски отоброжаются в истории и в файле
 
         System.out.println("-----------------------------------");
         System.out.println("новый менеджер");
         TasksManager tasksManager2 = Managers.getDefault(new File("src/resourses/", "file.csv"));
         System.out.println(tasksManager2.getHistory());
-
-
     }
 }

@@ -1,7 +1,5 @@
 package ru.yandex.practicum.tasktracker.tasks;
 
-import ru.yandex.practicum.tasktracker.manager.TypesOfTasks;
-
 public class Task {
     protected String name;
     protected int id;

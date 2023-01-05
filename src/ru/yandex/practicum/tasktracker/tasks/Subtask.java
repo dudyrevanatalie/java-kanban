@@ -1,7 +1,5 @@
 package ru.yandex.practicum.tasktracker.tasks;
 
-import ru.yandex.practicum.tasktracker.manager.TypesOfTasks;
-
 public class Subtask extends Task {
     private final int epicId;
 

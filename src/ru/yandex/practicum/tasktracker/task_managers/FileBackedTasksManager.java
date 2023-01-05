@@ -1,5 +1,7 @@
-package ru.yandex.practicum.tasktracker.manager;
+package ru.yandex.practicum.tasktracker.task_managers;
 
+import ru.yandex.practicum.tasktracker.exeption_managers.ManagerSaveException;
+import ru.yandex.practicum.tasktracker.history_managers.HistoryManager;
 import ru.yandex.practicum.tasktracker.tasks.Epic;
 import ru.yandex.practicum.tasktracker.tasks.Subtask;
 import ru.yandex.practicum.tasktracker.tasks.Task;
@@ -13,11 +15,9 @@ import java.util.Map;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
     private final File file;
-    final private String path;
 
     public FileBackedTasksManager(File file) {
         this.file = file;
-        path = "src/resourses/";
     }
 
     private void save() throws ManagerSaveException {// будет сохранять текущее состояние менеджера в указанный файл.
@@ -36,7 +36,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             writer.write("\n");
             writer.write(historyToString(historyManager));
         } catch (IOException e) {
-            throw new ManagerSaveException("метод Save() -> ошибка");
+            throw new ManagerSaveException("метод Save() -> ошибка", new Throwable());
         }
     }
 
@@ -90,8 +90,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public static FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file);
-        try (Reader reader = new FileReader(file)) {
-            BufferedReader buf = new BufferedReader(reader);
+        try (BufferedReader buf = new BufferedReader(new FileReader(file))) {
             StringBuilder stringBuilder = new StringBuilder();
 
             while (buf.ready()) {
@@ -145,10 +144,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 fileBackedTasksManager.getFromIdEpic(id);
             }
 
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при создании файла");
+            throw new ManagerSaveException("Ошибка при создании файла", new Throwable());
         }
 
         return fileBackedTasksManager;

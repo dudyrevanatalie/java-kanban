@@ -1,4 +1,4 @@
-package ru.yandex.practicum.tasktracker.manager;
+package ru.yandex.practicum.tasktracker.history_managers;
 
 import ru.yandex.practicum.tasktracker.tasks.Task;
 
