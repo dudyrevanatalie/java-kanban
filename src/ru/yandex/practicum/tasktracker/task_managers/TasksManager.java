@@ -8,16 +8,17 @@ import ru.yandex.practicum.tasktracker.tasks.Task;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Set;
 
 public interface TasksManager {
 
 
     //Получение списка всех задач.
-    HashMap<Integer, Subtask> getSubtasks();
+    List<Subtask> getSubtasks();
 
-    HashMap<Integer, Task> getTasks();
+    List<Task> getTasks();
 
-    HashMap<Integer, Epic> getEpics();
+    List<Epic> getEpics();
 
     //Удаление всех задач.
     void clearSubtasks();
@@ -61,6 +62,8 @@ public interface TasksManager {
     ArrayList<Subtask> getSubtaskList(Epic epic);
 
     List<Task> getHistory();
+    Set<Task> getPrioritizedTasks();
+
 }
 
 

@@ -20,10 +20,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         this.file = file;
     }
 
-    private void save() throws ManagerSaveException {// будет сохранять текущее состояние менеджера в указанный файл.
+    public void save() throws ManagerSaveException {// будет сохранять текущее состояние менеджера в указанный файл.
 
         try (Writer writer = new FileWriter(file)) {
-            writer.write("id,type,name,status,description,epic\n");
+            writer.write("id,type,name,status,description,start time,duration,end time,epic\n");
             for (Task task : tasks.values()) {
                 writer.write(task.toString() + "\n");
             }
@@ -51,13 +51,16 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
             return stringBuilder.toString();
         } else {
-            return "Список истории пуст";
+            return " ";
         }
 
     }
 
     public static List<Integer> historyFromString(String value) {
         List<Integer> integers = new ArrayList<>();
+        if (value.equals("")) {
+            return integers;
+        }
         String[] historyArr = value.split(",");
         for (String strId : historyArr) {
             integers.add(Integer.parseInt(strId));
@@ -70,12 +73,23 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         Task taskNew = null;
         switch (strings[1]) {
             case "TASK":
-                taskNew = new Task(strings[2], strings[4]);
+                taskNew = new Task(
+                        strings[2],
+                        strings[4],
+                        strings[5],
+                        Integer.parseInt(strings[6])
+                );
                 taskNew.setStatus(TaskStatus.valueOf(strings[3]));
                 taskNew.setId(Integer.parseInt(strings[0]));
                 break;
             case "SUBTASK":
-                taskNew = new Subtask(strings[2], strings[4], Integer.parseInt(strings[5]));
+                taskNew = new Subtask(
+                        strings[2],
+                        strings[4],
+                        strings[5],
+                        Integer.parseInt(strings[6]),
+                        Integer.parseInt(strings[8])
+                );
                 taskNew.setStatus(TaskStatus.valueOf(strings[3]));
                 taskNew.setId(Integer.parseInt(strings[0]));
                 break;
