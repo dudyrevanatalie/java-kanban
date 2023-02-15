@@ -2,6 +2,7 @@ package Tests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import ru.yandex.practicum.tasktracker.history_managers.HistoryManager;
 import ru.yandex.practicum.tasktracker.history_managers.InMemoryHistoryManager;
 import ru.yandex.practicum.tasktracker.tasks.Task;
@@ -64,7 +65,7 @@ class InMemoryHistoryManagerTest {
                 "11.02.23 12.00", 40);
         task1.setId(1);
         task2.setId(2);
-        historyManager.add(task1);
+        historyManager.add(null);
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.add(task1);
@@ -74,6 +75,7 @@ class InMemoryHistoryManagerTest {
         checkList.add(task1);
         assertEquals(checkList, historyManager.getHistory());
     }
+
 
 
 }

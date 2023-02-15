@@ -1,5 +1,6 @@
 package ru.yandex.practicum.tasktracker.task_managers;
 
+import ru.yandex.practicum.tasktracker.exeption_managers.ManagerSaveException;
 import ru.yandex.practicum.tasktracker.history_managers.HistoryManager;
 import ru.yandex.practicum.tasktracker.tasks.Epic;
 import ru.yandex.practicum.tasktracker.tasks.Subtask;
@@ -16,7 +17,7 @@ public class InMemoryTaskManager implements TasksManager {
     protected static int generatorId;
 
     protected final HistoryManager historyManager;
-    protected Set<Task> sortedTasks = new TreeSet<>();
+    protected Set<Task> sortedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
     public InMemoryTaskManager() {
         subtasks = new HashMap<>();
@@ -73,14 +74,17 @@ public class InMemoryTaskManager implements TasksManager {
         epic.setEndTime(endTime);
     }
 
-    public void validateTask(Task newTask) {
+    public boolean validateTask(Task newTask) throws ManagerSaveException {
+        LocalDateTime newStart = newTask.getStartTime();
+        LocalDateTime newEnd = newTask.getEndTime();
         for (Task task : sortedTasks) {
-            if (newTask.getStartTime().isAfter(task.getStartTime()) &&
-                    newTask.getStartTime().isBefore(task.getEndTime())) {
-                System.out.println("Ваши задачи пересекается");
-                break;
+            LocalDateTime start = task.getStartTime();
+            LocalDateTime end = task.getEndTime();
+            if (!newStart.isAfter(end) && !start.isAfter(newEnd)) {
+                throw new ManagerSaveException("Задачи пересеклись!", new Throwable());
             }
         }
+        return false;
     }
 
 
@@ -161,36 +165,39 @@ public class InMemoryTaskManager implements TasksManager {
                 task.setId(generatorId);
             }
             tasks.put(task.getId(), task);
-            validateTask(task);
-            sortedTasks.add(task);
+            boolean checkIntersection = validateTask(task);
+            if (!checkIntersection) {
+                sortedTasks.add(task);
+            } else {
+                System.out.println("Таска не может быть добавлена, так как пересекается с существующей");
+            }
         } else {
             System.out.println("Task с таким id уже существует :)");
         }
-
-
     }
 
     @Override
     public void createSubtask(Subtask subtask) {
-
         int id = subtask.getId();
         Subtask s = subtasks.get(id);
-
         if (s == null) {
             if (subtask.getId() == 0) {
                 generatorId++;
                 subtask.setId(generatorId);
             }
             subtasks.put(subtask.getId(), subtask);
-            validateTask(subtask);
-            sortedTasks.add(subtask);
+            boolean checkIntersection = validateTask(subtask);
+            if (!checkIntersection) {
+                sortedTasks.add(subtask);
+            } else {
+                System.out.println("Таска не может быть добавлена, так как пересекается с существующей");
+            }
             Epic epic = epics.getOrDefault(subtask.getEpicId(), null);
             if (epic != null) {
                 epic.getSubtaskIds().add(subtask.getId());
                 //проверка статуса эпика в котором лежит наш сабтаск
                 updateStatusOfEpic(epic);
             }
-
         } else {
             System.out.println("Subtask с таким id уже существует :)");
         }
@@ -198,7 +205,6 @@ public class InMemoryTaskManager implements TasksManager {
 
     @Override
     public void createEpic(Epic epic) {
-
         int id = epic.getId();
         Epic e = epics.get(id);
         if (e == null) {
@@ -292,12 +298,11 @@ public class InMemoryTaskManager implements TasksManager {
             historyManager.remove(id);
             //удаляем саб таску из эпик листа
             ArrayList<Integer> subtaskIds = epic.getSubtaskIds();
-
             Iterator<Integer> iterator = subtaskIds.iterator();
             while (iterator.hasNext()) {
                 Integer nextCat = iterator.next();
                 if (nextCat == id) {
-                    subtaskIds.remove(nextCat);
+                    iterator.remove();
                 }
             }
             updateStatusOfEpic(epic);

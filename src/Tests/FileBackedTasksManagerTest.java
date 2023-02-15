@@ -9,7 +9,7 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
+class FileBackedTasksManagerTest extends TasksManagerTest<FileBackedTasksManager> {
     @Override
     FileBackedTasksManager createManager() {
         return new FileBackedTasksManager(new File("src/resourses/file.csv"));

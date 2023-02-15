@@ -86,11 +86,16 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (historyMap.containsKey(task.getId())) {
-            //удаляем ноду
-            removeNode(historyMap.remove(task.getId()));
+        if (task != null) {
+            if (historyMap.containsKey(task.getId())) {
+                //удаляем ноду
+                removeNode(historyMap.remove(task.getId()));
+            }
+            historyMap.put(task.getId(), addLast(task));
+        } else {
+            System.out.println("Несуществующая таска не может быть добавлена в историю просмотров!");
         }
-        historyMap.put(task.getId(), addLast(task));
+
     }
 
     @Override
