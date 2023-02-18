@@ -14,7 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    private final File file;
+
+
+    public FileBackedTasksManager() {
+
+    }
+
+    private File file;
 
     public FileBackedTasksManager(File file) {
         this.file = file;

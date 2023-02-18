@@ -1,5 +1,4 @@
 id,type,name,status,description,start time,duration,end time,epic
-2,SUBTASK,Subtask1,NEW,Subtask1 desk,10.02.23 12.00,30,10.02.23 12.30,1
-1,EPIC,Epic1,NEW,descOfEpic,15.02.23 13.41,0,15.02.23 13.41,
+1,TASK,TASK,NEW,TASK desc,10.02.23 12.00,30,10.02.23 12.30,
 
- 
+1

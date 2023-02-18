@@ -10,6 +10,7 @@ import ru.yandex.practicum.tasktracker.tasks.Subtask;
 import ru.yandex.practicum.tasktracker.tasks.Task;
 import ru.yandex.practicum.tasktracker.tasks.TaskStatus;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,10 +19,10 @@ import static org.junit.jupiter.api.Assertions.*;
 abstract class TasksManagerTest<T extends TasksManager> {
     T manager;
 
-    abstract T createManager();
+    abstract T createManager() throws IOException;
 
     @BeforeEach
-    public void beforeEach() {
+    public void beforeEach() throws IOException {
         manager = createManager();
     }
 
@@ -48,7 +49,7 @@ abstract class TasksManagerTest<T extends TasksManager> {
         manager.createSubtask(subtask1);
 
         Subtask subtask2 = new Subtask("Subtask1", "Subtask1 desc",
-                "10.02.23 12.00", 30, epic.getId());
+                "10.02.23 13.00", 30, epic.getId());
         manager.createSubtask(subtask2);
 
         subtask1.setStatus(TaskStatus.DONE);

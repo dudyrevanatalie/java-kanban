@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class InMemoryTaskManager implements TasksManager {
+    public int id = 1;
     protected final HashMap<Integer, Subtask> subtasks;
     protected final HashMap<Integer, Task> tasks;
     protected final HashMap<Integer, Epic> epics;
@@ -81,7 +82,7 @@ public class InMemoryTaskManager implements TasksManager {
             LocalDateTime start = task.getStartTime();
             LocalDateTime end = task.getEndTime();
             if (!newStart.isAfter(end) && !start.isAfter(newEnd)) {
-                throw new ManagerSaveException("Задачи пересеклись!", new Throwable());
+                throw new ManagerSaveException("Задачи пересеклись!");
             }
         }
         return false;
@@ -347,8 +348,14 @@ public class InMemoryTaskManager implements TasksManager {
     }
 
     @Override
-    public Set<Task> getPrioritizedTasks() {
-        return this.sortedTasks;
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(sortedTasks);
+    }
+
+    public void addTaskToHistory(Task task) {
+        if (task != null) {
+            historyManager.add(task);
+        }
     }
 
 
