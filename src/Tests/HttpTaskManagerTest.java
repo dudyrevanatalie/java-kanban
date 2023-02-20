@@ -43,7 +43,8 @@ public class HttpTaskManagerTest extends TasksManagerTest<HttpTaskManager> {
     public void testLoadingStateFromKVServerToOtherManager() {
         Task task = new Task("Title", "Desc", "30.01.23 09.00", 45);
         Epic epic = new Epic("Epic title", "Epic description");
-        Subtask subtask = new Subtask("Subtask title", "Subtask description", "31.01.23 10.00", 15, epic.getId());
+        Subtask subtask = new Subtask("Subtask title", "Subtask description", "31.01.23 10.00",
+                15, epic.getId());
 
         manager.createEpic(epic);
         manager.createTask(task);
@@ -83,15 +84,14 @@ public class HttpTaskManagerTest extends TasksManagerTest<HttpTaskManager> {
         Task task = new Task("Title", "Desc", "30.01.23 09.00", 45);
         Task task1 = new Task("Title", "Desc", "02.02.23 11.00", 15);
         Task task2 = new Task("Title", "Desc", "15.01.23 23.00", 60);
+        Subtask subtask = new Subtask("Subtask title", "Subtask description",
+                "31.01.23 10.00", 15, 56);
         Epic epic = new Epic("Epic title", "Epic description");
-        Subtask subtask = new Subtask("Subtask title", "Subtask description", "31.01.23 10.00", 15, epic.getId());
-
 
         manager.createTask(task);
         manager.createTask(task1);
         manager.createTask(task2);
 
-        manager.createEpic(epic);
         manager.createSubtask(subtask);
 
 

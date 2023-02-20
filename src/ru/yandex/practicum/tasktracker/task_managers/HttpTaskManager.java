@@ -8,11 +8,12 @@ import ru.yandex.practicum.tasktracker.tasks.Subtask;
 import ru.yandex.practicum.tasktracker.tasks.Task;
 
 public class HttpTaskManager extends FileBackedTasksManager {
-    KVTaskClient client;
-    Gson gson = new Gson();
+    private KVTaskClient client;
+    public static Gson gson;
 
     public HttpTaskManager(String url) {
         client = new KVTaskClient(url);
+        gson = new Gson();
     }
 
     @Override
@@ -31,7 +32,6 @@ public class HttpTaskManager extends FileBackedTasksManager {
     public static HttpTaskManager load() {
         HttpTaskManager manager = new HttpTaskManager("http://localhost");
         KVTaskClient client = manager.client;
-        Gson gson = new Gson();
         try {
             String tasksJson = client.load("TASK");
             if (tasksJson != null) {

@@ -64,13 +64,14 @@ public class HttpTaskServerTest {
     }
 
     @Test
-    public void testAddSubtask() { //Почему то отдельно тест проходит, а если забускать весть класс, то нет
-        Epic epic = new Epic("Epic title", "Epic description");
-        Subtask task = new Subtask("Task title", "Task description","30.01.23 12.15", 30, epic.getId());
+    public void testAddSubtask() {
+
+        Subtask task = new Subtask("Task title", "Task description", "30.02.23 12.15", 30, 3);
         String taskJson = gson.toJson(task);
 
         HttpResponse<String> response = add("/tasks/subtask", taskJson);
         assertEquals(200, response.statusCode());
+
     }
 
     @Test

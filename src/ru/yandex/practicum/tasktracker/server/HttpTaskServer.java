@@ -21,11 +21,13 @@ import java.util.Set;
 public class HttpTaskServer {
     private final int PORT = 8080;
 
-    TasksManager manager = Managers.getDefault();
-    HttpServer httpServer;
-    Gson gson = new Gson();
+    private final TasksManager manager;
+    private HttpServer httpServer;
+    private final Gson gson;
 
     public HttpTaskServer() throws IOException, InterruptedException {
+        manager = Managers.getDefault();
+        gson = new Gson();
     }
 
     public void start() throws IOException {
@@ -125,60 +127,67 @@ public class HttpTaskServer {
     class SubtaskHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
-            String method = exchange.getRequestMethod();
-            switch (method) {
-                case "GET":
-                    String getQuery = exchange.getRequestURI().getQuery();
-                    if (getQuery == null) {
-                        List<Subtask> subtasks = manager.getSubtasks();
-                        String subtasksJson = gson.toJson(subtasks);
-                        writeResponse(exchange, subtasksJson, 200);
-                    } else {
-                        int id = Integer.parseInt(getQuery.split("=")[1]);
-                        Subtask subtask = manager.getFromIdSubtask(id);
-                        if (subtask == null) {
-                            writeResponse(exchange, "Подзадача с запрошенным id не найдена", 404);
-                            break;
+            try {
+                String method = exchange.getRequestMethod();
+                switch (method) {
+                    case "GET":
+                        String getQuery = exchange.getRequestURI().getQuery();
+                        if (getQuery == null) {
+                            List<Subtask> subtasks = manager.getSubtasks();
+                            String subtasksJson = gson.toJson(subtasks);
+                            writeResponse(exchange, subtasksJson, 200);
+                        } else {
+                            int id = Integer.parseInt(getQuery.split("=")[1]);
+                            Subtask subtask = manager.getFromIdSubtask(id);
+                            if (subtask == null) {
+                                writeResponse(exchange, "Подзадача с запрошенным id не найдена", 404);
+                                break;
+                            }
+                            String subtaskJson = gson.toJson(subtask);
+                            writeResponse(exchange, subtaskJson, 200);
                         }
-                        String subtaskJson = gson.toJson(subtask);
-                        writeResponse(exchange, subtaskJson, 200);
-                    }
-                    break;
-                case "POST":
-                    InputStream is = exchange.getRequestBody();
-                    String requestBody = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-                    if (requestBody.isBlank()) {
-                        writeResponse(exchange, "Данные не переданы", 404);
                         break;
-                    }
-                    Subtask subtask = gson.fromJson(requestBody, Subtask.class);
-                    if (manager.getFromIdSubtask(subtask.getId()) == null) {
-                        manager.createSubtask(subtask);
-                        writeResponse(exchange, "Подзадача успешно добавлена", 200);
-                    } else {
-                        manager.updateSubtask(subtask);
-                        writeResponse(exchange, "Подзадача успешно обновлена", 200);
-                    }
-                    break;
-                case "DELETE":
-                    String deleteQuery = exchange.getRequestURI().getQuery();
-                    if (deleteQuery == null) {
-                        manager.clearSubtasks();
-                        writeResponse(exchange, "Все подзадачи успешно удалены", 200);
-                    } else {
-                        int id = Integer.parseInt(deleteQuery.split("=")[1]);
-                        if (manager.getFromIdSubtask(id) == null) {
-                            writeResponse(exchange, "Подзадача с id:" + id + " не найдена", 404);
+                    case "POST":
+                        InputStream is = exchange.getRequestBody();
+                        String requestBody = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+                        if (requestBody.isBlank()) {
+                            writeResponse(exchange, "Данные не переданы", 404);
                             break;
                         }
-                        manager.deleteSubtaskFromId(id);
-                        writeResponse(exchange, "Подзадача id:" + id + " успешно удалена", 200);
-                    }
-                    break;
-                default:
-                    writeResponse(exchange, "Неизвестный метод", 404);
+                        Subtask subtask = gson.fromJson(requestBody, Subtask.class);
+                        if (manager.getFromIdSubtask(subtask.getId()) == null) {
+                            manager.createSubtask(subtask);
+                            writeResponse(exchange, "Подзадача успешно добавлена", 200);
+                        } else {
+                            manager.updateSubtask(subtask);
+                            writeResponse(exchange, "Подзадача успешно обновлена", 200);
+                        }
+
+                        break;
+                    case "DELETE":
+                        String deleteQuery = exchange.getRequestURI().getQuery();
+                        if (deleteQuery == null) {
+                            manager.clearSubtasks();
+                            writeResponse(exchange, "Все подзадачи успешно удалены", 200);
+                        } else {
+                            int id = Integer.parseInt(deleteQuery.split("=")[1]);
+                            if (manager.getFromIdSubtask(id) == null) {
+                                writeResponse(exchange, "Подзадача с id:" + id + " не найдена", 404);
+                                break;
+                            }
+                            manager.deleteSubtaskFromId(id);
+                            writeResponse(exchange, "Подзадача id:" + id + " успешно удалена", 200);
+                        }
+                        break;
+                    default:
+                        writeResponse(exchange, "Неизвестный метод", 404);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
+
+
     }
 
     class EpicHandler implements HttpHandler {
